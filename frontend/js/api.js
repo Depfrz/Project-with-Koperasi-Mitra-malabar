@@ -1,11 +1,11 @@
 const API_BASE_URL = 'http://localhost:8000/api';
 
 const api = {
-    getToken: () => localStorage.getItem('access_token'),
+    getToken: () => localStorage.getItem('token'),
     
-    setToken: (token) => localStorage.setItem('access_token', token),
+    setToken: (token) => localStorage.setItem('token', token),
     
-    removeToken: () => localStorage.removeItem('access_token'),
+    removeToken: () => localStorage.removeItem('token'),
 
     request: async (endpoint, options = {}) => {
         const url = `${API_BASE_URL}${endpoint}`;

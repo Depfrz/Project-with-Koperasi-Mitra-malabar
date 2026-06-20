@@ -1,76 +1,151 @@
 // layout.js handles injecting the sidebar and top navigation into pages
 document.addEventListener('DOMContentLoaded', () => {
     // Check authentication on all pages except index.html
-    if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/' && window.location.pathname !== '/frontend/') {
+    const path = window.location.pathname;
+    if (!path.endsWith('index.html') && path !== '/' && path !== '/frontend/') {
         if (!api.getToken()) {
-            window.location.href = 'index.html';
+            // Determine correct index.html path based on current directory
+            const depth = path.split('/').filter(p => p).length - (path.endsWith('/') ? 1 : 0);
+            const indexPath = '../'.repeat(Math.max(depth - 1, 0)) + 'index.html';
+            window.location.href = indexPath;
             return;
         }
     }
 
-    const currentPage = window.location.pathname.split('/').pop();
+    // Get user role from localStorage (default to admin if not set)
+    const userRole = localStorage.getItem('role') || 'admin';
+    const currentPage = path.split('/').pop();
+    // Determine base href based on current directory (admin/, campaign/, leads/)
+    const segments = path.split('/');
+    const roleDir = segments.length > 2 ? segments[segments.length - 2] : ''; // admin, campaign, or leads
+    const baseHref = roleDir ? './' : './';
+
+    // Function to check if menu item should be active
+    const isActive = (pagePattern) => {
+        if (pagePattern === 'dashboard.html' && currentPage === 'dashboard.html') return true;
+        if (pagePattern.includes('*')) {
+            return currentPage.startsWith(pagePattern.replace('*', ''));
+        }
+        return currentPage === pagePattern;
+    };
+
+    // Build menu items based on role
+    let menuItems = '';
+    
+    // Admin & Leads have Dashboard
+    if (userRole === 'admin' || userRole === 'leads') {
+        menuItems += `
+            <a href="${baseHref}dashboard.html" class="menu-item ${isActive('dashboard.html') ? 'active' : ''}">
+                <i class="ph ph-squares-four" style="font-size: 20px;"></i>
+                Dashboard
+            </a>
+        `;
+    }
+
+    // Admin & Leads have Customer & Kunjungan
+    if (userRole === 'admin' || userRole === 'leads') {
+        menuItems += `
+            <a href="${baseHref}customer.html" class="menu-item ${isActive('customer.html') || isActive('tambah-customer.html') || isActive('edit-customer.html') ? 'active' : ''}">
+                <i class="ph ph-users" style="font-size: 20px;"></i>
+                Customer
+            </a>
+            <a href="${baseHref}kunjungan.html" class="menu-item ${isActive('kunjungan.html') || isActive('tambah-kunjungan.html') || isActive('edit-kunjungan.html') ? 'active' : ''}">
+                <i class="ph ph-map-pin" style="font-size: 20px;"></i>
+                Kunjungan
+            </a>
+        `;
+    }
+
+    // Admin & Campaign have Campaign
+    if (userRole === 'admin' || userRole === 'campaign') {
+        menuItems += `
+            <a href="${baseHref}campaign.html" class="menu-item ${isActive('campaign.html') || isActive('tambah-campaign.html') || isActive('campaign-detail.html') || isActive('edit-campaign.html') ? 'active' : ''}">
+                <i class="ph ph-note-pencil" style="font-size: 20px;"></i>
+                Campaign
+            </a>
+        `;
+    }
+
+    // Produk & Riwayat - all roles
+    menuItems += `
+        <a href="${baseHref}produk.html" class="menu-item ${isActive('produk.html') || isActive('tambah-produk.html') || isActive('edit-produk.html') ? 'active' : ''}">
+            <i class="ph ph-package" style="font-size: 20px;"></i>
+            Produk
+        </a>
+        <a href="${baseHref}riwayat.html" class="menu-item ${isActive('riwayat.html') ? 'active' : ''}">
+            <i class="ph ph-clock-counter-clockwise" style="font-size: 20px;"></i>
+            Riwayat
+        </a>
+    `;
+
+    // Kelola Akun - only admin
+    if (userRole === 'admin') {
+        menuItems += `
+            <a href="${baseHref}kelola-akun.html" class="menu-item ${isActive('kelola-akun.html') || isActive('tambah-akun.html') || isActive('edit-akun.html') ? 'active' : ''}" style="margin-top: 2rem;">
+                <i class="ph ph-users-gear" style="font-size: 20px;"></i>
+                Kelola Akun
+            </a>
+        `;
+    }
+
+    // Logout - all roles
+    menuItems += `
+        <a href="#" id="logout-btn" class="menu-item" style="margin-top: auto;">
+            <i class="ph ph-sign-out" style="font-size: 20px;"></i>
+            Logout
+        </a>
+    `;
 
     const sidebarHTML = `
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="logo-circle" style="width: 32px; height: 32px; background-color: var(--primary-color); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">M</div>
-                <div class="sidebar-logo-text" style="font-size: 1rem; color: var(--secondary-color); font-weight:700;">Mitra Malabar</div>
+                <div class="logo-circle">M</div>
+                <div class="sidebar-logo-text">Mitra Malabar</div>
             </div>
             <nav class="sidebar-menu">
-                <a href="#" class="menu-item ${currentPage === 'dashboard.html' ? 'active' : ''}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                    Dashboard
-                </a>
-                <a href="customer.html" class="menu-item ${currentPage === 'customer.html' ? 'active' : ''}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    Customer
-                </a>
-                <a href="kunjungan.html" class="menu-item ${currentPage === 'kunjungan.html' ? 'active' : ''}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    Kunjungan
-                </a>
-                <a href="campaign.html" class="menu-item ${currentPage.includes('campaign') ? 'active' : ''}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    Campaign
-                </a>
-                <a href="produk.html" class="menu-item ${currentPage.includes('produk') ? 'active' : ''}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                    Produk
-                </a>
-                <a href="riwayat.html" class="menu-item ${currentPage === 'riwayat.html' ? 'active' : ''}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    Riwayat
-                </a>
-                <a href="#" id="logout-btn" class="menu-item" style="margin-top: auto;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    Logout
-                </a>
+                ${menuItems}
             </nav>
         </aside>
     `;
 
     const topbarHTML = `
         <header class="top-bar">
-            <div class="search-bar">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" placeholder="Search...">
+            <div class="search-wrapper">
+                <i class="ph ph-magnifying-glass" style="font-size: 18px; color: #888;"></i>
+                <input type="text" placeholder="Cari...">
             </div>
             <div class="user-profile">
                 <button class="btn-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <i class="ph ph-bell" style="font-size: 20px;"></i>
                 </button>
                 <button class="btn-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <i class="ph ph-gear" style="font-size: 20px;"></i>
                 </button>
-                <div class="avatar" style="background-color: var(--primary-dark); color: white; display: flex; align-items:center; justify-content:center; font-weight:bold; font-size:12px;">A</div>
+                <a href="${baseHref}profil.html" class="user-avatar-link">
+                    <div class="avatar" style="background-color: var(--primary-dark); color: white; display: flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;">${localStorage.getItem('username')?.charAt(0).toUpperCase() || 'A'}</div>
+                </a>
             </div>
         </header>
     `;
 
+    // Create toast container for notifications
+    const toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    document.body.appendChild(toastContainer);
+
     const appContainer = document.querySelector('.app-container');
     if (appContainer) {
-        appContainer.insertAdjacentHTML('afterbegin', sidebarHTML);
+        // Remove existing sidebar/topbar if any (to avoid duplication)
+        const existingSidebar = appContainer.querySelector('.sidebar');
+        if (existingSidebar) existingSidebar.remove();
         const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            const existingTopbar = mainContent.querySelector('.top-bar');
+            if (existingTopbar) existingTopbar.remove();
+        }
+
+        // Insert new sidebar and topbar
+        appContainer.insertAdjacentHTML('afterbegin', sidebarHTML);
         if (mainContent) {
             mainContent.insertAdjacentHTML('afterbegin', topbarHTML);
         }
@@ -88,8 +163,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error("Logout API error, clearing token anyway", error);
             } finally {
                 api.removeToken();
-                window.location.href = 'index.html';
+                localStorage.removeItem('role');
+                localStorage.removeItem('username');
+                // Redirect to correct index.html
+                const segments = window.location.pathname.split('/');
+                const depth = segments.filter(p => p).length - (window.location.pathname.endsWith('/') ? 1 : 0);
+                const indexPath = '../'.repeat(Math.max(depth - 1, 0)) + 'index.html';
+                window.location.href = indexPath;
             }
         });
     }
 });
+
+// Toast notification helper
+window.showToast = (message, type = 'success') => {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="ph ${type === 'success' ? 'ph-check-circle' : 'ph-x-circle'}"></i>
+        </div>
+        <div class="toast-message">${message}</div>
+    `;
+    container.appendChild(toast);
+
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    // Remove after 5 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+};

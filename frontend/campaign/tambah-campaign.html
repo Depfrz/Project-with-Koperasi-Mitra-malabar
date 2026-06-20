@@ -4,42 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Campaign - Mitra Malabar</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
     <div class="app-container">
-        
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="brand-logo-circle">M</div>
-                <div class="sidebar-logo-text">Mitra <br> Malabar</div>
-            </div>
-            <nav class="sidebar-menu">
-               <a href="campaign.html" class="menu-item active">Campaign</a>
-                <a href="produk.html" class="menu-item">Produk</a>
-                <a href="riwayat.html" class="menu-item">Riwayat</a>
-            </nav>
-        </aside>
-
         <main class="main-content">
-            <header class="top-bar">
-                <div class="topbar-space"></div>
-                <div class="user-profile">
-                    <button class="btn-text-action" style="color:var(--text-main);">Notifikasi</button>
-                    <a href="profil.html">
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80" alt="User" class="avatar">
-                    </a>
-                </div>
-            </header>
-
-            <div class="page-header header-spacing">
-                <div class="page-title">
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
                     <h1>Tambah Campaign</h1>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="campaign.html" class="btn btn-outline">Batal</a>
+                    <button type="submit" form="form-tambah-campaign" class="btn btn-primary">Simpan Campaign</button>
                 </div>
             </div>
 
@@ -73,16 +53,13 @@
                         <label class="form-label">Keterangan / Deskripsi</label>
                         <textarea id="campaign-deskripsi" class="form-control" rows="4" placeholder="Masukkan rincian singkat mengenai fokus atau tujuan utama dari program campaign..."></textarea>
                     </div>
-
-                    <div class="form-actions-container">
-                        <a href="campaign.html" class="btn btn-outline">Batal</a>
-                        <button type="submit" class="btn btn-primary btn-campaign-save" id="btn-submit">Simpan Campaign</button>
-                    </div>
                 </form>
             </div>
         </main>
     </div>
     
+    <script src="../js/api.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/admin-core.js"></script>
     <script src="../js/admin-tambah-campaign.js"></script>
 </body>
