@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Campaign - Mitra Malabar</title>
+    <title>Edit Campaign - Mitra Malabar</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="../css/style.css">
@@ -15,19 +15,19 @@
         <main class="main-content">
             <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <div>
-                    <h1>Tambah Campaign</h1>
+                    <h1>Edit Campaign</h1>
                 </div>
                 <div style="display: flex; gap: 1rem;">
                     <a href="campaign.html" class="btn btn-outline">Batal</a>
-                    <button type="submit" form="form-tambah-campaign" class="btn btn-primary">Simpan Campaign</button>
+                    <button type="submit" form="form-edit-campaign" class="btn btn-primary">Simpan Campaign</button>
                 </div>
             </div>
 
             <div class="form-card">
-                <h2 class="form-card-title">Informasi Campaign Baru</h2>
-                <p class="form-card-subtitle">Lengkapi data di bawah ini untuk menambahkan campaign baru ke dalam sistem Malabar.</p>
+                <h2 class="form-card-title">Informasi Campaign</h2>
+                <p class="form-card-subtitle">Perbarui data di bawah ini untuk mengubah program campaign dalam sistem.</p>
 
-                <form id="form-tambah-campaign">
+                <form id="form-edit-campaign">
                     <div class="form-group">
                         <label class="form-label">Nama Campaign</label>
                         <input type="text" id="campaign-nama" class="form-control" placeholder="Masukkan nama program campaign" required>
@@ -57,10 +57,8 @@
             </div>
         </main>
     </div>
-    
     <script src="../js/api.js"></script>
     <script src="../js/layout.js"></script>
     <script src="../js/admin-core.js"></script>
-    <script src="../js/admin-tambah-campaign.js"></script>
 </body>
 </html>

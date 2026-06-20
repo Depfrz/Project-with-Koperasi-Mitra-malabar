@@ -26,6 +26,11 @@
     line-height: 1.4;
     margin-bottom: 0.5rem;
 }
+.card-subtitle {
+    font-size: 0.75rem;
+    color: #777;
+    font-weight: 400;
+}
 .erd-labels {
     display: flex;
     justify-content: space-around;
@@ -33,6 +38,9 @@
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-main);
+}
+.erd-labels-wide {
+    justify-content: space-between;
 }
 .chart-container {
     flex: 1;
@@ -350,3 +358,80 @@
 }
 
 .mt-4 { margin-top: 1.5rem; }
+
+/* --- BADGE ROLE --- */
+.badge-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.badge-leads { background-color: #EAF2D3; color: #4A5B22; }
+.badge-admin { background-color: #D1E2A3; color: #334015; }
+.badge-campaign { background-color: #F1F1F1; color: #555555; }
+.dot { width: 6px; height: 6px; border-radius: 50%; }
+.dot-green { background-color: #6D8A21; }
+.dot-gray { background-color: #888888; }
+
+/* --- CAMPAIGN VIEW --- */
+.header-spacing {
+    margin-bottom: 1rem;
+}
+.view-toggle-pill {
+    display: inline-flex;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 0.25rem;
+    margin-bottom: 1.5rem;
+}
+.view-toggle-pill .btn-icon {
+    padding: 0.5rem 0.75rem;
+    border-radius: 16px;
+}
+.view-toggle-pill .btn-icon.active-view {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+.campaign-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+.campaign-card {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: box-shadow 0.2s;
+}
+.campaign-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.campaign-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+.campaign-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+.campaign-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
