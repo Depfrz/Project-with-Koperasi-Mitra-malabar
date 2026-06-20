@@ -33,3 +33,5 @@ Thumbs.db
 # Local data
 uploads/
 
+# GDrive configuration and secret keys
+app/services/gdrive/
